@@ -3,6 +3,14 @@
 {% block title %}Modification de mot de passe{% endblock %}
 
 {% block content %}
-<h1>Modifier mon compte</h1>
+<h1>Modifier mon mot de passe </h1>
+<hr>
+{% if notification %}
+<div class="alert alert-info">{{notification}}</div>
+{% endif %}
+
+{{form(form)}}
+<hr>
+<a href="{{path('account')}}">Retourner à mon compte</a>
 
 {% endblock %}
