@@ -1,13 +1,15 @@
+body {
+  position: relative;
+}
 .navbar-item-customiser a {
   color: white;
 }
 
 .footer-customiser {
   text-align: center;
-  position: fixed;
+  position: absolute;
   width: 100%;
-  background-color: #a4b8c4;
-  bottom: 0;
+  background-color: #ef476f;
   padding-top: 23px;
   padding-bottom: 5px;
 }
@@ -27,10 +29,13 @@
 .product-item .product-prix {
   font-size: 15px;
   font-weight: bold;
+  background-color: #ef476f;
+  border-radius: 3px;
 }
 
 .product-item {
-  margin-top: 70px;
+  margin-top: 50px;
+  
 }
 
 .product-container {
@@ -38,4 +43,11 @@
 }
 .product-seul {
   font-size: 25px;
+}
+
+.product-item img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 270px;
 }
