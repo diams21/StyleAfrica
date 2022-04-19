@@ -23,7 +23,7 @@ class ProductRepository extends ServiceEntityRepository
 
 
     /**
-     * rquette qui me permet de retourner le produit en fonction du filtre choisi par l'utilisateur 
+     * re<quette qui me permet de retourner le produit en fonction du filtre choisi par l'utilisateur 
      * @return product[]
      */
     public function findWithSearch (Search $search){

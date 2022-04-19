@@ -33,12 +33,15 @@ class ProductController extends AbstractController
         
 
         $search= new Search();
+        //nouvelle instance search
         $form= $this->createForm(SearchType::class, $search);
-
+// que je passse a mon formulaire pour qu'il le construisent
         $form->handleRequest($request);
+        //pour ecouter la requette pour savoir si le formulaire à ete soumis
         if ($form->isSubmitted() && $form->isValid()){
 
             $products= $this->entityManager->getRepository(Product::class)->findWithSearch($search);
+            // grace à entity manager on est aller chercher le produits dans product
 
         }else{
 
@@ -47,7 +50,9 @@ class ProductController extends AbstractController
        
 
         return $this->render('product/index.html.twig', [
-          'products'=> $products,'form' =>$form->createView()
+          'products'=> $products,
+          'form' =>$form->createView()
+          // nous avons passer le formulaire à la vue twig
         ]);
     }
 
@@ -60,6 +65,7 @@ class ProductController extends AbstractController
     {
 
         $product= $this->entityManager->getRepository(Product::class)->findOneBySlug($slug);
+        $products=$this->entityManager->getRepository(Product::class)->findByIsBest(1);
 
             if (!$product){
 
@@ -68,7 +74,8 @@ class ProductController extends AbstractController
 
 
         return $this->render('product/show.html.twig', [
-          'product'=> $product
+          'product'=> $product,
+          'products'=> $products
         ]);
     }
 }

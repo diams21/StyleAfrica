@@ -3,6 +3,8 @@
 {% block title %}vous Connecter à StyleAfica{% endblock %}
 
 {% block content %}
+<div>
+
 <form method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -39,4 +41,6 @@
         Se Connecter
     </button>
 </form>
+
+</div>
 {% endblock %}
