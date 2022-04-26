@@ -36,7 +36,10 @@ class Carrier
     {
         return $this->id;
     }
-
+    public function __toString()
+    {
+        return $this->getName().'[br]'.$this->getDescription().'[br]'.number_format($this->getPrice(),2,',',',').'€' ;//permet d'afficher le nom, la description et le prix du transporteur et number_format pour fr 2 rang apres la virgule
+    }
     public function getName(): ?string
     {
         return $this->name;

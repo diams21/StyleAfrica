@@ -10,7 +10,16 @@
 <div class="row">
 <div class="col-md-6">
 <b>Choissir mon adresse de livraison</b><br>
-<b>Choissir mon transporteur</b>
+
+{% set formhtml %}
+
+{{form(form)}}
+
+{% endset %}
+
+{{formhtml |replace({'[br]': '<br/>'})|raw }}
+
+
 </div>
 <div class="col-md-6">
 <b>Recap de ma commande</b><br>

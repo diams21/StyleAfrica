@@ -3,7 +3,7 @@
 {% block title %}vous Connecter à StyleAfica{% endblock %}
 
 {% block content %}
-<div>
+<div class= "small-block" >
 
 <form method="post">
     {% if error %}
@@ -37,10 +37,12 @@
         </div>
     #}
 <br>
-    <button class="btn btn-lg btn-primary btn-sm" type="submit">
+    <button class="btn btn-lg btn-info btn-block mt-3" type="submit">
         Se Connecter
     </button>
 </form>
+<hr>
+<p class="text-center">Ou souhaitez-vous <a href="{{path('register')}}">créer un compte</a></p>
 
 </div>
 {% endblock %}

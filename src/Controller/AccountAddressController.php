@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\classe\Cart;
 use App\Entity\Address;
 use App\Form\AddressType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,21 +33,29 @@ class AccountAddressController extends AbstractController
      /**
      * @Route("/compte/ajouter-une-adresse", name="account_address_add")
      */
-    public function add(Request $request): Response
+    public function add(Cart $cart, Request $request): Response
     {
         $address= new Address();
         $form=$this->createForm(AddressType::class,$address);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()&& $form->isValid()){
+        if($form->isSubmitted() && $form->isValid()){
 
             $address->setUser($this->getUser());
 
             $this-> entityManager->persist($address);
             $this-> entityManager->flush();
 
-            return $this->redirectToRoute('account_address');
+            if ($cart->get())//si le panier contient de produits
+            {
+               return $this->redirectToRoute('order'); //tu me dirige vers order
+            }else 
+            
+            {
+                return $this->redirectToRoute('account_address');//sinon tu me dirige vesr la page d'ajout d'@
+            }
+           
         }
 
         return $this->render('account/address_form.html.twig',[
