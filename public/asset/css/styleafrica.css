@@ -61,3 +61,19 @@ body {
   max-width: 600px;
   margin: 0 auto;
 }
+
+.form-check{
+
+  padding: 20px 65px;
+  margin-top: 7px;
+}
+
+.col-form-label{
+  font-weight: bold;
+}
+
+.order-summary{
+
+  padding: 20px;
+  margin-top: 22px;
+}
