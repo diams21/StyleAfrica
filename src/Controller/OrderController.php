@@ -10,9 +10,14 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\DateTimeTzImmutableType;
 use Doctrine\ORM\EntityManagerInterface;
+
+use Stripe\Checkout\Session;
+use Stripe\FinancialConnections\Session as FinancialConnectionsSession;
+use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session as SessionSession;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\DateTime as ConstraintsDateTime;
@@ -90,9 +95,12 @@ class OrderController extends AbstractController
            $order->setIsPaid(0);
            $this-> entityManager->persist($order);
 
+           $products_for_stripe = [];//initialisation d'un tab vide 
+           $YOUR_DOMAIN = 'http://127.0.0.1:8000';
            // enregistrement des mes produits (orederdetails)
            
-           foreach ($cart->getFull() as $product){
+           foreach ($cart->getFull() as $product){// on est aller sur le panier $cart pour voir les produits quil ya et demander pour chaque produit de mon panier tu cree une orderdetails
+
             $orderDetails = new OrderDetails();
             $orderDetails->setMyOrder($order);
             $orderDetails->setProduct($product['product']->getName());
@@ -100,19 +108,51 @@ class OrderController extends AbstractController
             $orderDetails->setPrice($product['product']->getPrix());
             $orderDetails->setTotal($product['product']->getPrix()*$product['quantity']);
             $this-> entityManager->persist($orderDetails);
-           }
+           
+         $products_for_stripe[]=[
+//ici on definis le different products que je souhaite envoyer à stripe 
+//on rajoute une entrée avec tout mes lines items quon va recuperer dans orderdetails
+            
+            'price_data'=>[
+                'currency'=>'eur',
+                'unit_amount'=> $product['product']->getPrix(),
+                'product_data'=>[
+                    'name'=>$product['product']->getName(),
+                    'images'=> [$YOUR_DOMAIN."/uploads/".$product['product']->getIllustration()],
+                   
+                    
+                ],
+            ],
+                  'quantity' => $product['quantity'],
 
-           $this-> entityManager->flush();
+         ];
+        
+        }
+
+          // $this-> entityManager->flush();
             
 
           
+        Stripe::setApiKey('sk_test_51L2XrgFn8EmCT5qnb7eyvVIkgjyh7kM2n1EIWxY6zLNgptBr42luUIgfw6trnJfnjmsfWDmLSMs1T9RemlgGeY3500fKMV8UuJ');//initialiser la clé d'API de stripe 
+
+        $checkout_session = Session::create([//le retour de L'API sur la checkout session
+            //avec toutes les parmatres que lui ai demander
+            'payment_method_types' => ['card'],
+            'line_items' => [ $products_for_stripe
+        ],
+            'mode' => 'payment',
+            'success_url' => $YOUR_DOMAIN . '/success.html',
+            'cancel_url' => $YOUR_DOMAIN . '/cancel.html',
+          ]);
         
+  
 
             return $this->render('order/add.html.twig',[
          
                 'cart'=> $cart->getFull(),// je passe mon panier à twig
                 'carrier'=> $carriers,// je passe mon transporteur à twig
-                'delivery'=>  $delivery_content// je passe mon addresse de livraison à twig
+                'delivery'=>  $delivery_content,// je passe mon addresse de livraison à twig
+                'stripe_checkout_session'=> $checkout_session->id//on envoie la checkout_session->id à twig
             
             ]);
         }
