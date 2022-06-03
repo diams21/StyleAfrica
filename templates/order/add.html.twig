@@ -1,4 +1,11 @@
 {% extends 'base.html.twig' %}
+{% block javascript %}
+
+    <script src="https://js.stripe.com/v3/"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+
+
+{% endblock %}
 
 {% block title %}paiement de  ma commande{% endblock %}
 
@@ -67,8 +74,45 @@ X {{product.quantity}}
  <hr>
  <strong> total : </strong>{{((total/100)+(carrier.price))|number_format(2,',','.')}}€ <br/>
 
-<a href="" class="btn btn-success btn-block mt-3"><b>Payer {{((total/100)+(carrier.price))|number_format(2,',','.')}}€ </b> </a>
+<a href="" class="btn btn-success btn-block mt-3" id="checkout-button"><b>Payer {{((total/100)+(carrier.price))|number_format(2,',','.')}}€ </b> </a> 
+{ #ID rajouter va permettre à stripe d'ecouter quand les users va liquer sur payer # }
 </div>
 </div>
+
+{% endblock %}
+{% block script %}
+
+
+  <script type ="text/javascript">
+  var stripe = Stripe("pk_test_51L2XrgFn8EmCT5qnLwYdRSxllDLXme6rL89goCxETce7vUMM44kSj7tETJOzDObGILfCEDJh4o3nWnw9RhPWlYh700Lc7RyU9s");
+  var checkoutButton = document.getElementById("checkout-button");
+
+  checkoutButton.addEventListener("click", function () {
+    fetch("/commande/create-session" , {
+      method:"POST" ,
+    })
+    .then(function (response) {
+      return response.json();
+    })
+
+     .then(function (session) {
+      return stripe.redirectToCheckout({sessionId: session.id});
+    })
+
+     .then(function (result) {
+       if(result.error){
+
+          alert(result.error.message);
+       }
+    })
+
+   .catch(function (error) {
+      console.error("Error:",error);
+   });
+
+
+  });
+  
+  </script>
 
 {% endblock %}
