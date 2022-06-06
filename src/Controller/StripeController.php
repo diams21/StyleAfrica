@@ -44,6 +44,8 @@ class StripeController extends AbstractController
 
         }
 
+        
+
         Stripe::setApiKey('sk_test_51L2XrgFn8EmCT5qnb7eyvVIkgjyh7kM2n1EIWxY6zLNgptBr42luUIgfw6trnJfnjmsfWDmLSMs1T9RemlgGeY3500fKMV8UuJ');//initialisation de la clé public de l'API de stripe 
         header('Content-Type: application/json');
        

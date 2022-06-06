@@ -88,7 +88,7 @@ X {{product.quantity}}
   var checkoutButton = document.getElementById("checkout-button");
 
   checkoutButton.addEventListener("click", function () {
-    fetch("/commande/create-session" , {
+    fetch("/commande/create-session/{{ reference}}" , {
       method:"POST" ,
     })
     .then(function (response) {
