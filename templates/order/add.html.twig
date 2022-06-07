@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block javascript %}
 
-    <script src="https://js.stripe.com/v3/"></script>
-      <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+   <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
 
 
 {% endblock %}
@@ -85,11 +85,11 @@ X {{product.quantity}}
 
   <script type ="text/javascript">
   var stripe = Stripe("pk_test_51L2XrgFn8EmCT5qnLwYdRSxllDLXme6rL89goCxETce7vUMM44kSj7tETJOzDObGILfCEDJh4o3nWnw9RhPWlYh700Lc7RyU9s");
-  var checkoutButton = document.getElementById("checkout-button");
+  var checkoutButton =document.getElementById("checkout-button");
 
-  checkoutButton.addEventListener("click", function () {
-    fetch("/commande/create-session/{{ reference}}" , {
-      method:"POST" ,
+  checkoutButton.addEventListener("click", function() {
+    fetch("/commande/create-session" , {
+      method:"POST",
     })
     .then(function (response) {
       return response.json();
@@ -100,7 +100,7 @@ X {{product.quantity}}
     })
 
      .then(function (result) {
-       if(result.error){
+       if (result.error){
 
           alert(result.error.message);
        }
@@ -108,7 +108,7 @@ X {{product.quantity}}
 
    .catch(function (error) {
       console.error("Error:",error);
-   });
+     });
 
 
   });

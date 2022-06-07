@@ -10,10 +10,8 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\DateTimeTzImmutableType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Id;
 
-use Stripe\Checkout\Session;
-use Stripe\FinancialConnections\Session as FinancialConnectionsSession;
-use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,7 +94,7 @@ class OrderController extends AbstractController
            $order->setIsPaid(0);
            $this-> entityManager->persist($order);
 
-          
+         
            
            foreach ($cart->getFull() as $product){// on est aller sur le panier $cart pour voir les produits quil ya et demander pour chaque produit de mon panier tu cree une orderdetails
 
@@ -107,20 +105,22 @@ class OrderController extends AbstractController
             $orderDetails->setPrice($product['product']->getPrix());
             $orderDetails->setTotal($product['product']->getPrix()*$product['quantity']);
             $this-> entityManager->persist($orderDetails);
-           
 
         }
        
-        
-          $this-> entityManager->flush();
-            
+       
+         // $this-> entityManager->flush();
+
+
+       
 
             return $this->render('order/add.html.twig',[
          
                 'cart'=> $cart->getFull(),// je passe mon panier à twig
                 'carrier'=> $carriers,// je passe mon transporteur à twig
                 'delivery'=>  $delivery_content, // je passe mon addresse de livraison à twig
-               'reference'=>$order->getReference()//je passe ma reference à twig
+               'reference'=>$order->getReference() //je passe ma reference à twig
+             
             ]);
         }
         return $this->redirectToRoute('cart');

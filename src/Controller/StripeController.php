@@ -20,49 +20,41 @@ class StripeController extends AbstractController
      */
     public function index(Cart $cart)
     {
-        $products_for_stripe=[];//j'initialise un tab vide 
+        $product_for_stripe=[];
         $YOUR_DOMAIN = 'http://127.0.0.1:8000';
 
-        foreach ($cart->getFull() as $product){// on est aller sur le panier $cart pour voir les produits quil ya et demander pour chaque produit de mon panier tu cree une orderdetails
+        foreach ($cart->getFull() as $product){
 
-              //puis on definis le different products que je souhaite envoyer à stripe 
-                //on rajoute une entrée avec tout mes lines items quon va recuperer dans orderdetails
+            $product_for_stripe[] =[
 
-            $products_for_stripe[]=[
-                'price_data'=>[
+                'price_data' =>[
                     'currency'=>'eur',
-                    'unit_amount'=> $product['product']->getPrix(),
-                    'product_data'=>[
-                        'name'=>$product['product']->getName(),
-                        'images'=> [$YOUR_DOMAIN."/uploads/".$product['product']->getIllustration()],
+                    'unit_amount'=>$product['product']->getPrix(),
+                        'product_data'=>[
+                            'name'=>$product['product']->getName(),
+                            'images'=> [$YOUR_DOMAIN."/uploads/".$product['product']->getIllustration()],
                     ],
-                ],
-                
-                    'quantity' => $product['quantity'],
+                    ],
+                'quantity' => $product['quantity'],
+             
 
-            ];
+           ];
 
         }
 
-        
+        Stripe::setApiKey  ('sk_test_51L2XrgFn8EmCT5qnb7eyvVIkgjyh7kM2n1EIWxY6zLNgptBr42luUIgfw6trnJfnjmsfWDmLSMs1T9RemlgGeY3500fKMV8UuJ');
+        $YOUR_DOMAIN = 'http://127.0.0.1:8000';
 
-        Stripe::setApiKey('sk_test_51L2XrgFn8EmCT5qnb7eyvVIkgjyh7kM2n1EIWxY6zLNgptBr42luUIgfw6trnJfnjmsfWDmLSMs1T9RemlgGeY3500fKMV8UuJ');//initialisation de la clé public de l'API de stripe 
-        header('Content-Type: application/json');
-       
-       
-       $checkout_session = Session::create([//le retour de L'API sur la checkout session
-        //avec toutes les parmatres que lui ai demander
+$checkout_session = Session::create([
+  'payment_method_types' => ['card'], 
+  'line_items' => [$product_for_stripe],
+'mode' => 'payment',
+'success_url' => $YOUR_DOMAIN . '/success.html',
+'cancel_url' => $YOUR_DOMAIN . '/cancel.html',
+]);
 
-           'payment_method_types' => ['card'],
-         'line_items' => [
-           $products_for_stripe
-         ],
-         'mode' => 'payment',
-         'success_url' => $YOUR_DOMAIN . '/success.html',
-         'cancel_url' => $YOUR_DOMAIN . '/cancel.html',
-       ]);
+$response = new JsonResponse(['id'=>$checkout_session->id]);
+return $response;
 
-       $response = new JsonResponse(['id'=>$checkout_session->id]);
-       return  $response ;//LA REPONSE EN JSON 
     }
 }
